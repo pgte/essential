@@ -126,10 +126,42 @@ test('trumpet automation works', function(t) {
 })
 
 // TODO
+test('user should be able to include response transformations before the final destination', function(t) {
+  var server = Woosh()
+  var mid1 = new Transformation(function(d) {
+    return d.toString().toLowerCase()
+  })
+  var mid2 = new Transformation(function(d) {
+    return 'Z' + d.toString()
+  })
+  server.on('woosh::request', function(req, res) {
+    res.beforeLast(mid1, mid2)
+    res.end('ABCDEF')
+  })
+  var request = new BufferedStream
+  var response = new BufferedStream
+  var hadData = false
+  response.on('data', function(d) {
+    t.equal(d.toString(), 'Zabcdef')
+    hadData = true
+  })
+  
+  response.on('end', function() {
+    t.ok(hadData)
+    t.end()
+  })
+
+  server.emit('request', request, response)
+})
+
+// TODO
 test('templates should be composable')
 
 // TODO
 test('user can bind on routes')
+
+// TODO
+test('can use request "middleware" to parse cookies, etc')
 
 // TODO
 test('user can reply JSON object')

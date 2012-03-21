@@ -24,6 +24,12 @@ function Response(server) {
       responseTransformations.source(source);
     }
 
+    wrappedResponse.beforeLast = function beforeLast(transformations) {
+      for(var i = 0; i < arguments.length; i ++) {
+        responseTransformations.beforeLast(arguments[i]);
+      }
+    }
+
     wrappedResponse.start = function start() {
       responseTransformations.pipe()
     }

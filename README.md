@@ -4,7 +4,7 @@
 
 HTTP Framework that streams all the way.
 
-Request interceptors + Response Transformation Stack + Streaming templates + 
+Request interceptors + Response Transformation Stack + Streaming templates + ???
 
 ## Define a Server
 
@@ -22,7 +22,7 @@ server.listen(8080)
 
 ## Define the Response Stream default Transformations
 
-You can setup a pipeline of streams transoformations that will transform the response body. `server.response.defaultTransformations` will accept any number of arguments, all containing streams.
+You can setup a pipeline of streams transoformations that will transform the response body. `server.response.defaultTransformations` will accept any number of arguments, all containing duplex streams.
 
 ```javascript
 server.response.defaultTransformations(
@@ -30,6 +30,15 @@ server.response.defaultTransformations(
   , scriptHighlighter
   , zlib.createGzip()
 )
+```
+
+## Add a series of response transformations on a request at the end
+
+```javascript
+server.on('woosh::request', function(req, res) {
+  res.beforeLast(myResponseTransformation1, myResponseTransformation2, ...)
+  res.end('this string will travel through all my transformations')
+})
 ```
 
 ## Listen for requests
