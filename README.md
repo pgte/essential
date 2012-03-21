@@ -61,6 +61,23 @@ server.on('woosh::request', function(req, res) {
 })
 ```
 
+## You can automatically reply a template stream by using res.html()
+
+```javascript
+server.on('woosh::request', function(req, res) {
+
+  res.html(__dirname + '/update.html', function(t) {
+    t.select('.b span', function (node) {
+      node.update(function (html) {
+        return html.toUpperCase()
+      })
+    })
+  })
+
+})
+```
+
+
 
 # License
 

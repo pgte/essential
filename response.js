@@ -1,5 +1,6 @@
 var Pipeline = require('pipeline')
   , BufferedStream = require('BufferedStream')
+  , Html = require('./html')
   ;
 
 function Response(server) {
@@ -12,12 +13,21 @@ function Response(server) {
 
   function wrap(response) {
     var wrappedResponse = new BufferedStream()
+
     var responseStack = stack.clone()
-    
+
     responseStack.dest(response)
     responseStack.source(wrappedResponse)
 
-    responseStack.pipe()
+    wrappedResponse.source = function source(source) {
+      responseStack.source(source);
+    }
+
+    wrappedResponse.start = function start() {
+      responseStack.pipe()
+    }
+
+    wrappedResponse.html = Html(response, wrappedResponse)
 
     return wrappedResponse
   }

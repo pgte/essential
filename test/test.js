@@ -6,11 +6,13 @@ var Woosh = require('../')
   , fs = require('fs')
   ;
 
+
 test('a server is returned by the constructor', function(t) {
   var server = Woosh()
   t.ok(server instanceof require('http').Server, 'server is HTTP Server')
   t.end()
 })
+
 
 test('a server emits the woosh::request when a normal request comes in', function(t) {
   var server = Woosh()
@@ -51,7 +53,8 @@ test('writing to a response goes through the default pipeline', function(t) {
 
 })
 
-test('trumpet on response works', function(t) {
+
+test('trumpet piped into response works', function(t) {
 
   var server = Woosh()
   server.on('woosh::request', function(req, res) {
@@ -64,7 +67,6 @@ test('trumpet on response works', function(t) {
     })
 
     tr.pipe(res)
-    tr.on('end', function() { console.log('tr ended')})
     fs.createReadStream(__dirname + '/fixtures/update.html').pipe(tr)
   })
 
@@ -75,7 +77,6 @@ test('trumpet on response works', function(t) {
   var accumulatedResponse = ''
   
   response.on('data', function(d) {
-    // console.log('response data')
     accumulatedResponse += d
   })
 
@@ -86,4 +87,34 @@ test('trumpet on response works', function(t) {
 
   server.emit('request', request, response)
 
+})
+
+test('trumpet automation works', function(t) {
+  var server = Woosh()
+
+  server.on('woosh::request', function(req, res) {
+    res.html(__dirname + '/fixtures/update.html', function(t) {
+      t.select('.b span', function (node) {
+        node.update(function (html) {
+          return html.toUpperCase()
+        })
+      })
+    })
+  })
+
+  var request = new BufferedStream
+  var response = new BufferedStream
+  response.setEncoding('utf8')
+
+  var accumulatedResponse = ''
+  response.on('data', function(d) {
+    accumulatedResponse += d
+  })
+
+  response.on('end', function() {
+    t.equal(accumulatedResponse, fs.readFileSync(__dirname + '/fixtures/update_transformed.html', 'utf8'))
+    t.end()
+  })
+  
+  server.emit('request', request, response)
 })

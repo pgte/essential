@@ -17,11 +17,11 @@
   },
   "dependencies": {
     "pipeline": "*",
-    "bufferedstream": "*"
+    "bufferedstream": "*",
+    "trumpet": "*"
   },
   "devDependencies": {
-    "tap": "*",
-    "trumpet": "*"
+    "tap": "*"
   },
   "scripts": {
     "test": "node node_modules/tap/bin/tap.js test/test.js"
