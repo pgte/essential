@@ -1,6 +1,6 @@
 {
   "name": "woosh",
-  "description": "Strwaming all the way down",
+  "description": "Streaming all the way down",
   "version": "0.0.1",
   "author": {
     "name": "Pedro Teixeira"
@@ -12,10 +12,17 @@
   "tags": ["streaming", "http", "framework"],
   "main": "./woosh.js",
   "engines": { "node": ">= 0.6.0" },
+  "dependencies": {
+    "pipeline": "*"
+  },
+  "dependencies": {
+    "pipeline": "*",
+    "bufferedstream": "*"
+  },
   "devDependencies": {
     "tap": "*"
   },
   "scripts": {
-    "test": "node node_modules/tap/bin/tap.js test.js"
+    "test": "node node_modules/tap/bin/tap.js test/test.js"
   }
 }
