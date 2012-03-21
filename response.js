@@ -5,26 +5,27 @@ var Pipeline = require('pipeline')
 
 function Response(server) {
 
-  var stack = Pipeline()
+  var transformations = Pipeline()
 
-  function defaultStack() {
-    stack = Pipeline(arguments)
+  function defaultTransformations() {
+    var args = Array.prototype.slice.call(arguments)
+    transformations = Pipeline(args)
   }
 
   function wrap(response) {
     var wrappedResponse = new BufferedStream()
 
-    var responseStack = stack.clone()
+    var responseTransformations = transformations.clone()
 
-    responseStack.dest(response)
-    responseStack.source(wrappedResponse)
+    responseTransformations.dest(response)
+    responseTransformations.source(wrappedResponse)
 
     wrappedResponse.source = function source(source) {
-      responseStack.source(source);
+      responseTransformations.source(source);
     }
 
     wrappedResponse.start = function start() {
-      responseStack.pipe()
+      responseTransformations.pipe()
     }
 
     wrappedResponse.html = Html(response, wrappedResponse)
@@ -34,7 +35,7 @@ function Response(server) {
 
   return {
       wrap: wrap
-    , defaultStack: defaultStack
+    , defaultTransformations: defaultTransformations
   }
 }
 

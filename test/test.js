@@ -28,11 +28,13 @@ test('a server emits the woosh::request when a normal request comes in', functio
   server.emit('request', request, response)
 })
 
+
 test('writing to a response goes through the default pipeline', function(t) {
   var server = Woosh()
   var mid = new Transformation(function(d) {
-    return d.toLowerCase()
+    return d.toString().toLowerCase()
   })
+  server.response.defaultTransformations(mid)
   server.on('woosh::request', function(req, res) {
     res.end('ABCDEF')
   })
@@ -40,7 +42,7 @@ test('writing to a response goes through the default pipeline', function(t) {
   var response = new BufferedStream
   var hadData = false
   response.on('data', function(d) {
-    t.equal(d.toString(), 'ABCDEF')
+    t.equal(d.toString(), 'abcdef')
     hadData = true
   })
   
@@ -120,4 +122,14 @@ test('trumpet automation works', function(t) {
   server.emit('request', request, response)
 })
 
+// TODO
+test('templates should be composable')
 
+// TODO
+test('user can bind on routes')
+
+// TODO
+test('user can reply JSON object')
+
+// TODO
+test('user can transform incoming stream')

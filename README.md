@@ -4,7 +4,7 @@
 
 HTTP Framework that streams all the way.
 
-Response Stream Stack
+Request interceptors + Response Transformation Stack + Streaming templates + 
 
 ## Define a Server
 
@@ -20,12 +20,12 @@ server.on('request', function(req, res) {
 server.listen(8080)
 ```
 
-## Define the Response Stream Stack
+## Define the Response Stream default Transformations
 
-You can setup a pipeline of streams that will transform the response body. `server.response.defaultStack` will accept any number of arguments, all containing streams.
+You can setup a pipeline of streams transoformations that will transform the response body. `server.response.defaultTransformations` will accept any number of arguments, all containing streams.
 
 ```javascript
-server.response.defaultStack(
+server.response.defaultTransformations(
     personalizer
   , scriptHighlighter
   , zlib.createGzip()
