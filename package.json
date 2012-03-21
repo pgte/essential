@@ -20,7 +20,8 @@
     "bufferedstream": "*"
   },
   "devDependencies": {
-    "tap": "*"
+    "tap": "*",
+    "trumpet": "*"
   },
   "scripts": {
     "test": "node node_modules/tap/bin/tap.js test/test.js"

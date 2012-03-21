@@ -2,6 +2,8 @@ var Woosh = require('../')
   , test = require('tap').test
   , BufferedStream = require('bufferedstream')
   , Transformation = require('./transformation')
+  , Trumpet = require('trumpet')
+  , fs = require('fs')
   ;
 
 test('a server is returned by the constructor', function(t) {
@@ -30,14 +32,58 @@ test('writing to a response goes through the default pipeline', function(t) {
     return d.toLowerCase()
   })
   server.on('woosh::request', function(req, res) {
-    res.write('ABCDEF')
+    res.end('ABCDEF')
   })
   var request = new BufferedStream
   var response = new BufferedStream
-  server.emit('request', request, response)
+  var hadData = false
   response.on('data', function(d) {
-    t.equal('ABCDEF', d.toString())
+    t.equal(d.toString(), 'ABCDEF')
+    hadData = true
+  })
+  
+  response.on('end', function() {
+    t.ok(hadData)
     t.end()
   })
+
+  server.emit('request', request, response)
+
+})
+
+test('trumpet on response works', function(t) {
+
+  var server = Woosh()
+  server.on('woosh::request', function(req, res) {
+    var tr = Trumpet()
+
+    tr.select('.b span', function (node) {
+      node.update(function (html) {
+        return html.toUpperCase()
+      })
+    })
+
+    tr.pipe(res)
+    tr.on('end', function() { console.log('tr ended')})
+    fs.createReadStream(__dirname + '/fixtures/update.html').pipe(tr)
+  })
+
+  var request = new BufferedStream
+  var response = new BufferedStream
+  response.setEncoding('utf8')
+
+  var accumulatedResponse = ''
+  
+  response.on('data', function(d) {
+    // console.log('response data')
+    accumulatedResponse += d
+  })
+
+  response.on('end', function() {
+    t.equal(accumulatedResponse, fs.readFileSync(__dirname + '/fixtures/update_transformed.html', 'utf8'))
+    t.end()
+  })
+
+  server.emit('request', request, response)
 
 })

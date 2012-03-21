@@ -24,10 +24,43 @@ server.listen(8080)
 
 ```javascript
 server.response.defaultStack(zlib.createGzip())
-server.on('request', function(req, res) {
-  res.write('some text that will get gzipped')
+```
+
+## Listen for requests
+
+```javascript
+server.on('woosh::request', function(req, res) {
+  res.write('This response text will get gzipped')
 })
 ```
+
+## Push a streaming trumpet template into the response
+
+For this you first have to install trumpet via npm.
+
+Then you can push the streaming template.
+
+```javascript
+
+var Trumpet = require('trumpet')
+  , fs = require('fs')
+  ;
+
+server.on('woosh::request', function(req, res) {
+  var tr = Trumpet()
+
+  tr.select('.b span', function (node) {
+    node.update(function (html) {
+      return html.toUpperCase()
+    })
+  })
+
+  tr.pipe(response)
+  fs.createReadStream(__dirname + '/update.html').pipe(tr)
+
+})
+```
+
 
 # License
 
