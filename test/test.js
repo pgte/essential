@@ -89,6 +89,7 @@ test('trumpet piped into response works', function(t) {
 
 })
 
+
 test('trumpet automation works', function(t) {
   var server = Woosh()
 
@@ -118,3 +119,5 @@ test('trumpet automation works', function(t) {
   
   server.emit('request', request, response)
 })
+
+

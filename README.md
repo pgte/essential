@@ -22,15 +22,21 @@ server.listen(8080)
 
 ## Define the Response Stream Stack
 
+You can setup a pipeline of streams that will transform the response body. `server.response.defaultStack` will accept any number of arguments, all containing streams.
+
 ```javascript
-server.response.defaultStack(zlib.createGzip())
+server.response.defaultStack(
+    personalizer
+  , scriptHighlighter
+  , zlib.createGzip()
+)
 ```
 
 ## Listen for requests
 
 ```javascript
 server.on('woosh::request', function(req, res) {
-  res.write('This response text will get gzipped')
+  res.write('This response text will be transformed by all the streams in the response stack')
 })
 ```
 
@@ -76,8 +82,6 @@ server.on('woosh::request', function(req, res) {
 
 })
 ```
-
-
 
 # License
 
