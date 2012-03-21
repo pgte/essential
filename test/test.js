@@ -31,10 +31,13 @@ test('a server emits the woosh::request when a normal request comes in', functio
 
 test('writing to a response goes through the default pipeline', function(t) {
   var server = Woosh()
-  var mid = new Transformation(function(d) {
+  var mid1 = new Transformation(function(d) {
     return d.toString().toLowerCase()
   })
-  server.response.defaultTransformations(mid)
+  var mid2 = new Transformation(function(d) {
+    return d.toString().substring(1)
+  })
+  server.response.defaultTransformations(mid1, mid2)
   server.on('woosh::request', function(req, res) {
     res.end('ABCDEF')
   })
@@ -42,7 +45,7 @@ test('writing to a response goes through the default pipeline', function(t) {
   var response = new BufferedStream
   var hadData = false
   response.on('data', function(d) {
-    t.equal(d.toString(), 'abcdef')
+    t.equal(d.toString(), 'bcdef')
     hadData = true
   })
   
@@ -133,3 +136,6 @@ test('user can reply JSON object')
 
 // TODO
 test('user can transform incoming stream')
+
+// TODO
+test('should have auth callback and `user` should be a thing')
