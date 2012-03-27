@@ -1,16 +1,16 @@
 {
-  "name": "woosh",
+  "name": "essential",
   "description": "Streaming all the way down",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": {
     "name": "Pedro Teixeira"
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/pgte/woosh.git" 
+    "url": "http://github.com/pgte/essential.git" 
   },
   "tags": ["streaming", "http", "framework"],
-  "main": "./woosh.js",
+  "main": "./essential.js",
   "engines": { "node": ">= 0.6.0" },
   "dependencies": {
     "pipeline": "*"
